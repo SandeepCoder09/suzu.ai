@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="hi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Suzu — Offline</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: #060612;
+        font-family: "Segoe UI", sans-serif;
+        color: #94a3b8;
+        text-align: center;
+        padding: 24px;
+      }
+      .logo {
+        font-size: 64px;
+        margin-bottom: 16px;
+      }
+      h1 {
+        font-size: 28px;
+        font-weight: 700;
+        color: #f0abfc;
+        margin-bottom: 8px;
+      }
+      p {
+        font-size: 15px;
+        color: #475569;
+        line-height: 1.7;
+        max-width: 300px;
+      }
+      .hint {
+        margin-top: 24px;
+        font-size: 13px;
+        color: #334155;
+      }
+      button {
+        margin-top: 24px;
+        padding: 12px 28px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #8b5cf6, #6366f1);
+        border: none;
+        color: white;
+        font-size: 15px;
+        cursor: pointer;
+        font-family: inherit;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="logo">🌸</div>
+    <h1>Suzu Offline है</h1>
+    <p>Internet connection नहीं है। <br />Network आने पर वापस आएं।</p>
+    <p class="hint">आपकी saved chats अभी भी देख सकते हैं!</p>
+    <button onclick="window.location.reload()">फिर से try करें</button>
+  </body>
+</html>

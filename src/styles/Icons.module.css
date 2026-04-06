@@ -1,0 +1,80 @@
+/* 3D Glass Icon Buttons */
+.glassIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    cursor: pointer;
+    border: 1px solid var(--glass-border);
+    background: var(--glass-bg);
+    box-shadow: var(--glass-shadow);
+    color: var(--text-muted);
+    transition: all 0.18s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Top shine line — creates 3D depth */
+.glassIcon::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--shine), transparent);
+    border-radius: 0 0 2px 2px;
+    pointer-events: none;
+}
+
+.glassIcon:hover {
+    background: var(--glass-bg-hover);
+    border-color: var(--border-md);
+    color: var(--text-secondary);
+    box-shadow: var(--glass-shadow-hover);
+    transform: translateY(-1px);
+}
+
+.glassIcon:active {
+    transform: translateY(0) scale(0.97);
+    box-shadow: var(--glass-shadow);
+}
+
+/* Color variants */
+.purple {
+    background: linear-gradient(145deg, rgba(139, 92, 246, 0.25), rgba(99, 102, 241, 0.12));
+    border-color: rgba(139, 92, 246, 0.4);
+    color: var(--accent-text);
+    box-shadow: 0 4px 16px rgba(139, 92, 246, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.15), inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+}
+
+.green {
+    background: linear-gradient(145deg, rgba(16, 185, 129, 0.25), rgba(5, 150, 105, 0.12));
+    border-color: rgba(16, 185, 129, 0.4);
+    color: #10b981;
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.red {
+    background: linear-gradient(145deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.1));
+    border-color: rgba(239, 68, 68, 0.35);
+    color: #f87171;
+    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.amber {
+    background: linear-gradient(145deg, rgba(245, 158, 11, 0.25), rgba(217, 119, 6, 0.12));
+    border-color: rgba(245, 158, 11, 0.4);
+    color: #f59e0b;
+    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.active {
+    background: linear-gradient(145deg, rgba(139, 92, 246, 0.3), rgba(99, 102, 241, 0.18)) !important;
+    border-color: rgba(139, 92, 246, 0.5) !important;
+    color: var(--accent-text) !important;
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.15), 0 4px 16px rgba(139, 92, 246, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+}

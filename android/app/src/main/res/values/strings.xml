@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Suzu AI</string>
+    <string name="title_activity_main">Suzu AI</string>
+    <string name="package_name">com.sandy.suzuai</string>
+    <string name="custom_url_scheme">com.sandy.suzuai</string>
+</resources>

@@ -1,0 +1,90 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-header);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 1px 0 var(--border), 0 4px 20px rgba(0, 0, 0, 0.12);
+  position: relative;
+  z-index: 10;
+  flex-shrink: 0;
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.logoWrap {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 10px var(--accent-glow));
+}
+
+.statusDot {
+  position: absolute;
+  bottom: 1px;
+  right: 1px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 2px solid var(--bg-base);
+  animation: pulse3d 1.2s ease-in-out infinite;
+}
+
+.brandText {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.name {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  background: var(--logo-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+}
+
+.tagline {
+  font-size: 10px;
+  color: var(--text-muted);
+  transition: color 0.3s;
+  letter-spacing: 0.3px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 7px 10px;
+  }
+
+  .actions {
+    gap: 4px;
+  }
+
+  .brandText {
+    display: none;
+  }
+}

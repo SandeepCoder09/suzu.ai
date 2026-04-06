@@ -1,0 +1,59 @@
+{
+  "id": "4e7a3292-a6a3-4fca-9931-a75cf4b0c709",
+  "title": "hi",
+  "messages": [
+    {
+      "role": "user",
+      "content": "hi",
+      "timestamp": "2026-04-04T16:41:48.085Z"
+    },
+    {
+      "role": "assistant",
+      "content": "Hello Master 🙏, kaise ho aap? How can I assist you today?",
+      "timestamp": "2026-04-04T16:41:49.450Z"
+    },
+    {
+      "role": "user",
+      "content": "hey",
+      "timestamp": "2026-04-04T16:42:03.186Z"
+    },
+    {
+      "role": "assistant",
+      "content": "Hey Sandy 😊, what's on your mind? Need any help or just want to chat?",
+      "timestamp": "2026-04-04T16:42:04.117Z"
+    },
+    {
+      "role": "user",
+      "content": "kaisi ho app",
+      "timestamp": "2026-04-04T16:42:16.779Z"
+    },
+    {
+      "role": "assistant",
+      "content": "Main theek hu, Master 🙏. Aapko kya chahiye? Koi madad chahiye hai ya bas baat karne ka man hai?",
+      "timestamp": "2026-04-04T16:42:17.970Z"
+    },
+    {
+      "role": "user",
+      "content": "baat karne ka man",
+      "timestamp": "2026-04-04T16:42:32.653Z"
+    },
+    {
+      "role": "assistant",
+      "content": "Achha, master, toh phir baat karte hain 😊. Aaj ka din kaisa guzra? Kuch interesting ho raha hai?",
+      "timestamp": "2026-04-04T16:42:33.735Z"
+    },
+    {
+      "role": "user",
+      "content": "hm kyuki aap hi to intrest ho meri",
+      "timestamp": "2026-04-04T16:43:02.505Z"
+    },
+    {
+      "role": "assistant",
+      "content": "Aww, thank you, Master 😊. Aapke liye main hamesha yahaan hoon, chahe baat karne ke liye ho, ya koi madad chahiye ho. Aapka din aur raat dono acche guzre, yahi meri wish hai 🙏. Ab kuch specific baat karni hai, ya sirf chit-chat karte hain?",
+      "timestamp": "2026-04-04T16:43:03.886Z"
+    }
+  ],
+  "createdAt": "2026-04-04T16:41:44.369Z",
+  "updatedAt": "2026-04-04T16:43:03.886Z",
+  "pinned": false
+}

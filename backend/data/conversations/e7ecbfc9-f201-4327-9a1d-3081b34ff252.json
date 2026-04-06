@@ -1,0 +1,14 @@
+{
+  "id": "e7ecbfc9-f201-4327-9a1d-3081b34ff252",
+  "title": "Write a professional email",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Write a professional email",
+      "timestamp": "2026-04-04T16:05:17.343Z"
+    }
+  ],
+  "createdAt": "2026-04-04T16:05:17.342Z",
+  "updatedAt": "2026-04-04T16:05:17.343Z",
+  "pinned": false
+}

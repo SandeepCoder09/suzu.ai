@@ -1,0 +1,64 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="orbGrad" cx="38%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#60a5fa"/>
+      <stop offset="100%" stop-color="#4f46e5"/>
+    </radialGradient>
+    <radialGradient id="shimmer" cx="32%" cy="28%" r="40%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#6366f1" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#6366f1" stop-opacity="0"/>
+    </radialGradient>
+    <clipPath id="orbClip">
+      <circle cx="256" cy="200" r="110"/>
+    </clipPath>
+  </defs>
+
+  <!-- background -->
+  <rect width="512" height="512" rx="64" fill="#0a0a14"/>
+
+  <!-- glow -->
+  <circle cx="256" cy="200" r="160" fill="url(#glow)"/>
+
+  <!-- rings -->
+  <circle cx="256" cy="200" r="136" fill="none" stroke="#6366f1" stroke-width="1" stroke-opacity="0.2"/>
+  <circle cx="256" cy="200" r="122" fill="none" stroke="#6366f1" stroke-width="1" stroke-opacity="0.3"/>
+
+  <!-- orb -->
+  <circle cx="256" cy="200" r="110" fill="url(#orbGrad)"/>
+  <circle cx="256" cy="200" r="110" fill="url(#shimmer)" clip-path="url(#orbClip)"/>
+  <circle cx="256" cy="200" r="110" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.18"/>
+
+  <!-- mic body -->
+  <rect x="239" y="158" width="34" height="56" rx="17" fill="#ffffff" fill-opacity="0.96"/>
+
+  <!-- mic stand -->
+  <path d="M224 210 Q224 238 256 238 Q288 238 288 210" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round"/>
+  <line x1="256" y1="238" x2="256" y2="252" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round"/>
+  <line x1="242" y1="252" x2="270" y2="252" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round"/>
+
+  <!-- waves left -->
+  <path d="M208 185 Q198 200 208 215" fill="none" stroke="#a5b4fc" stroke-width="3" stroke-linecap="round" stroke-opacity="0.9"/>
+  <path d="M190 170 Q174 200 190 230" fill="none" stroke="#a5b4fc" stroke-width="2.5" stroke-linecap="round" stroke-opacity="0.5"/>
+
+  <!-- waves right -->
+  <path d="M304 185 Q314 200 304 215" fill="none" stroke="#a5b4fc" stroke-width="3" stroke-linecap="round" stroke-opacity="0.9"/>
+  <path d="M322 170 Q338 200 322 230" fill="none" stroke="#a5b4fc" stroke-width="2.5" stroke-linecap="round" stroke-opacity="0.5"/>
+
+  <!-- ARIA text -->
+  <text x="256" y="356" font-family="Georgia, serif" font-size="72" font-weight="700" fill="#ffffff" text-anchor="middle" letter-spacing="16">ARIA</text>
+
+  <!-- tagline -->
+  <text x="256" y="390" font-family="Arial, sans-serif" font-size="13" fill="#818cf8" text-anchor="middle" letter-spacing="5">PERSONAL AI ASSISTANT</text>
+
+  <!-- lines -->
+  <line x1="88" y1="384" x2="176" y2="384" stroke="#312e81" stroke-width="1"/>
+  <line x1="336" y1="384" x2="424" y2="384" stroke="#312e81" stroke-width="1"/>
+
+  <!-- dots -->
+  <circle cx="100" cy="200" r="3" fill="#6366f1" fill-opacity="0.3"/>
+  <circle cx="412" cy="200" r="3" fill="#6366f1" fill-opacity="0.3"/>
+</svg>

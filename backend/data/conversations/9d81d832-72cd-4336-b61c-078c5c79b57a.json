@@ -1,0 +1,14 @@
+{
+  "id": "9d81d832-72cd-4336-b61c-078c5c79b57a",
+  "title": "Quick calculation",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Quick calculation",
+      "timestamp": "2026-04-04T03:47:37.074Z"
+    }
+  ],
+  "createdAt": "2026-04-04T03:47:37.073Z",
+  "updatedAt": "2026-04-04T03:47:37.074Z",
+  "pinned": false
+}

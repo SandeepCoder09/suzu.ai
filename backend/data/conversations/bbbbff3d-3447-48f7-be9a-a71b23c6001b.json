@@ -1,0 +1,19 @@
+{
+  "id": "bbbbff3d-3447-48f7-be9a-a71b23c6001b",
+  "title": "Write a professional email",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Write a professional email",
+      "timestamp": "2026-04-04T03:52:14.431Z"
+    },
+    {
+      "role": "assistant",
+      "content": "Suzu test reply",
+      "timestamp": "2026-04-04T03:52:14.432Z"
+    }
+  ],
+  "createdAt": "2026-04-04T03:52:14.430Z",
+  "updatedAt": "2026-04-04T03:52:14.432Z",
+  "pinned": false
+}

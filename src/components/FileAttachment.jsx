@@ -17,6 +17,7 @@ const ACCEPTED = {
 const ALL_ACCEPTED = Object.values(ACCEPTED).flat();
 
 export function getFileIcon(file) {
+  if (!file?.type) return "📎";
   const t = file.type;
   if (t.startsWith("image/")) return "🖼";
   if (t.startsWith("audio/")) return "🎵";
@@ -30,15 +31,24 @@ export function getFileIcon(file) {
 }
 
 export function formatBytes(bytes) {
+  if (!bytes) return "0 B";
   if (bytes < 1024) return bytes + " B";
   if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
   return (bytes / (1024 * 1024)).toFixed(1) + " MB";
 }
 
+// Safely normalize attachments — handles array, JSON string, or undefined
+function safeAttachments(attachments) {
+  if (Array.isArray(attachments)) return attachments;
+  if (typeof attachments === "string") {
+    try { return JSON.parse(attachments); } catch { return []; }
+  }
+  return [];
+}
+
 // ── AttachButton — the paperclip icon ─────────────────────────────
 export function AttachButton({ onFiles, disabled }) {
   const inputRef = useRef(null);
-  const [dragging, setDragging] = useState(false);
 
   const processFiles = useCallback((fileList) => {
     const files = Array.from(fileList).filter(f => {
@@ -75,7 +85,6 @@ export function AttachButton({ onFiles, disabled }) {
         title="Attach files, images, or documents"
         aria-label="Attach file"
       >
-        {/* Paperclip SVG */}
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
           stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
@@ -85,17 +94,18 @@ export function AttachButton({ onFiles, disabled }) {
   );
 }
 
-// ── AttachmentPreviewBar — shows selected files above input ────────
+// ── AttachmentPreviewBar — shows selected files above the input ────
 export function AttachmentPreviewBar({ attachments, onRemove, onPreview }) {
-  if (!attachments?.length) return null;
+  const safe = safeAttachments(attachments);
+  if (!safe.length) return null;
   return (
     <div className={styles.previewBar}>
-      {attachments.map((att, i) => (
+      {safe.map((att, i) => (
         <div key={i} className={styles.previewItem}>
           {att.isImage ? (
             <img
               src={att.dataUrl}
-              alt={att.file.name}
+              alt={att.file?.name}
               className={styles.previewThumb}
               onClick={() => onPreview?.(att)}
             />
@@ -105,8 +115,8 @@ export function AttachmentPreviewBar({ attachments, onRemove, onPreview }) {
             </div>
           )}
           <div className={styles.previewInfo}>
-            <p className={styles.previewName}>{att.file.name.slice(0, 18)}{att.file.name.length > 18 ? "…" : ""}</p>
-            <p className={styles.previewSize}>{formatBytes(att.file.size)}</p>
+            <p className={styles.previewName}>{att.file?.name?.slice(0, 18)}{att.file?.name?.length > 18 ? "…" : ""}</p>
+            <p className={styles.previewSize}>{formatBytes(att.file?.size)}</p>
           </div>
           <button className={styles.removeBtn} onClick={() => onRemove(i)} title="Remove">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
@@ -119,12 +129,13 @@ export function AttachmentPreviewBar({ attachments, onRemove, onPreview }) {
   );
 }
 
-// ── AttachmentBubble — renders attachments inside a message ────────
+// ── AttachmentBubble — renders attachments inside a chat message ───
 export function AttachmentBubble({ attachments, onPreview }) {
-  if (!attachments?.length) return null;
+  const safe = safeAttachments(attachments);
+  if (!safe.length) return null;
   return (
     <div className={styles.bubbleAttachments}>
-      {attachments.map((att, i) => (
+      {safe.map((att, i) => (
         att.isImage ? (
           <img
             key={i}
@@ -157,16 +168,13 @@ export function useFileAttachments() {
       const isImage = file.type.startsWith("image/");
       let dataUrl = null;
       let textContent = null;
-
       if (isImage) {
         dataUrl = await readAsDataURL(file);
       } else if (file.type.startsWith("text/") || file.type.includes("json")) {
         textContent = await readAsText(file);
       }
-
       return { file, isImage, dataUrl, textContent };
     }));
-
     setAttachments(prev => [...prev, ...newAtts]);
   }, []);
 
@@ -176,9 +184,8 @@ export function useFileAttachments() {
 
   const clearAttachments = useCallback(() => setAttachments([]), []);
 
-  // Build context string for AI from attachments
   const buildAttachmentContext = useCallback((atts) => {
-    const textParts = atts
+    const textParts = safeAttachments(atts)
       .filter(a => a.textContent)
       .map(a => `[File: ${a.file.name}]\n${a.textContent.slice(0, 3000)}`);
     return textParts.length > 0 ? "\n\n---\n" + textParts.join("\n\n") : "";

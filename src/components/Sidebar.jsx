@@ -32,10 +32,33 @@ export default function Sidebar({ activeId, onSelect, onNew, isOpen, onClose, t,
   const editRef = useRef(null);
 
   const loadChats = async (q) => {
-    try { const d = await listConversations(q); setConversations(d.conversations); } catch (_) {}
+    try {
+      const d = await listConversations(q);
+      if (Array.isArray(d?.conversations)) {
+        setConversations(d.conversations);
+      } else if (Array.isArray(d)) {
+        setConversations(d);
+      } else {
+        setConversations([]);
+      }
+    } catch (_) {
+      setConversations([]);
+    }
   };
+
   const loadMemories = async () => {
-    try { const d = await getMemories(); setMemories(d.memories); } catch (_) {}
+    try {
+      const d = await getMemories();
+      if (Array.isArray(d?.memories)) {
+        setMemories(d.memories);
+      } else if (Array.isArray(d)) {
+        setMemories(d);
+      } else {
+        setMemories([]);
+      }
+    } catch (_) {
+      setMemories([]);
+    }
   };
 
   useEffect(() => { loadChats(); loadMemories(); }, [activeId]);
@@ -56,7 +79,6 @@ export default function Sidebar({ activeId, onSelect, onNew, isOpen, onClose, t,
     loadChats();
   };
 
-  // ── Custom confirm dialog — no more browser alert! ─────────────
   const handleDelete = async (e, id, title) => {
     e.stopPropagation();
     const confirmed = await showConfirm({
@@ -101,6 +123,7 @@ export default function Sidebar({ activeId, onSelect, onNew, isOpen, onClose, t,
     loadMemories();
   };
 
+  // Safe filter — conversations is always an array now
   const pinned   = conversations.filter(c => c.pinned);
   const unpinned = conversations.filter(c => !c.pinned);
 

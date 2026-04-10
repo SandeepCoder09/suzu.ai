@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { CopyIcon, CheckIcon } from "./Icons";
-import { AttachmentBubble } from "./FileAttachment";
+// import { AttachmentBubble } from "./FileAttachment";
 import { ImageModal } from "./Dialog";
 import styles from "../styles/MessageBubble.module.css";
 
@@ -35,9 +35,9 @@ export default function MessageBubble({ message, copiedLabel = "Copied!" }) {
         <div className={styles.bubbleWrap}>
           <div className={`${styles.bubble} ${isUser ? styles.bubbleUser : styles.bubbleAssistant}`}>
             {/* Attachments rendered above text */}
-            {message.attachments?.length > 0 && (
-              <AttachmentBubble attachments={message.attachments} onPreview={setPreviewAtt} />
-            )}
+            {/* {message.attachments && (
+  <AttachmentBubble attachments={message.attachments} onPreview={setPreviewAtt} />
+)} */}
             {/* Text content — hide the raw attachment context dump */}
             {message.content?.split("\n\n---\n")[0]}
           </div>

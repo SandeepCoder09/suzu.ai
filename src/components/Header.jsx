@@ -34,8 +34,7 @@ const ThemeIcon = ({ theme }) => {
 };
 
 const nextTheme = (t) => t === "dark" ? "light" : t === "light" ? "system" : "dark";
-const themeLabel = (t, isDark) =>
-  t === "system" ? "System" : t === "dark" ? "Dark" : "Light";
+const themeLabel = (t) => t === "system" ? "System" : t === "dark" ? "Dark" : "Light";
 
 export default function Header({
   onMenuClick, onSettingsClick, onClearClick,
@@ -43,6 +42,7 @@ export default function Header({
   isListening, isSpeaking, isThinking,
   theme, onThemeChange,
   t, lang,
+  onVoiceModeClick,
 }) {
   const statusPhase = isListening ? "listening" : isSpeaking ? "speaking" : isThinking ? "thinking" : null;
   const statusColor = { listening: "#10b981", speaking: "#8b5cf6", thinking: "#f59e0b" }[statusPhase];
@@ -73,6 +73,20 @@ export default function Header({
       </div>
 
       <div className={styles.actions}>
+        {/* Voice Mode button */}
+        <GlassIcon
+          onClick={onVoiceModeClick}
+          title="Voice Mode"
+          size={36}
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <rect x="9" y="2" width="6" height="11" rx="3"/>
+            <path d="M5 10a7 7 0 0 0 14 0"/>
+            <line x1="12" y1="17" x2="12" y2="21"/>
+            <line x1="9" y1="21" x2="15" y2="21"/>
+          </svg>
+        </GlassIcon>
+
         {/* Theme cycle */}
         <GlassIcon
           onClick={() => onThemeChange(nextTheme(theme))}

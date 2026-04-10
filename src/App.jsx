@@ -16,120 +16,216 @@ import { getConversation } from "./services/api";
 import styles from "./styles/App.module.css";
 
 export default function App() {
-  // ── Auth ──────────────────────────────────────────────────────
   const [user, setUser] = useState(() => {
-    try { return JSON.parse(localStorage.getItem("suzu_user")); } catch { return null; }
+    try {
+      return JSON.parse(localStorage.getItem("suzu_user"));
+    } catch {
+      return null;
+    }
   });
 
-  const handleLogin  = (u) => setUser(u);
-  const handleLogout = () => { localStorage.removeItem("suzu_user"); setUser(null); };
-
-  // ── App state ─────────────────────────────────────────────────
   const [conversationId, setConversationId] = useState(null);
-  const [sidebarOpen,    setSidebarOpen]    = useState(window.innerWidth > 640);
-  const [settingsOpen,   setSettingsOpen]   = useState(false);
-  const [voiceEnabled,   setVoiceEnabled]   = useState(true);
-  const [voiceLang,      setVoiceLang]      = useState(() => localStorage.getItem("suzu_voice_lang") || "en");
-  const [fontSize,       setFontSize]       = useState(() => localStorage.getItem("suzu_fontsize") || "medium");
+  const [sidebarOpen, setSidebarOpen] = useState(() => window.innerWidth > 640);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [voiceEnabled, setVoiceEnabled] = useState(true);
+  const [voiceLang, setVoiceLang] = useState(
+    () => localStorage.getItem("suzu_voice_lang") || "en"
+  );
+  const [fontSize, setFontSize] = useState(
+    () => localStorage.getItem("suzu_fontsize") || "medium"
+  );
 
   const { theme, setTheme } = useTheme();
   const { lang, setLang, t, randomWake } = useLanguage();
-  const { canInstall, isInstalled, isOnline, triggerInstall, requestNotifications } = usePWA();
+  const {
+    canInstall,
+    isInstalled,
+    isOnline,
+    triggerInstall,
+    requestNotifications,
+  } = usePWA();
 
-  useEffect(() => { document.documentElement.setAttribute("data-fontsize", fontSize); localStorage.setItem("suzu_fontsize", fontSize); }, [fontSize]);
-  useEffect(() => { localStorage.setItem("suzu_voice_lang", voiceLang); }, [voiceLang]);
+  const handleLogin = (nextUser) => setUser(nextUser);
 
-  const { messages, isThinking, error, sendMessage, clearMessages, injectMessage, loadMessages } =
-    useChat(conversationId, setConversationId);
+  const handleLogout = () => {
+    localStorage.removeItem("suzu_user");
+    setUser(null);
+  };
 
-  // ── Wake word handler ─────────────────────────────────────────
+  useEffect(() => {
+    document.documentElement.setAttribute("data-fontsize", fontSize);
+    localStorage.setItem("suzu_fontsize", fontSize);
+  }, [fontSize]);
+
+  useEffect(() => {
+    localStorage.setItem("suzu_voice_lang", voiceLang);
+  }, [voiceLang]);
+
+  const {
+    messages,
+    isThinking,
+    error,
+    sendMessage,
+    clearMessages,
+    injectMessage,
+    loadMessages,
+  } = useChat(conversationId, setConversationId);
+
   const handleWakeWord = useCallback(() => {
     const reply = randomWake();
     injectMessage("Hey Suzu 🌸", reply);
-    if (voiceEnabled) setTimeout(() => speak(reply), 100);
-  }, [voiceEnabled, randomWake]);
+
+    if (voiceEnabled) {
+      setTimeout(() => speak(reply), 100);
+    }
+  }, [voiceEnabled, randomWake, injectMessage]);
 
   const {
-    isListening, isSpeaking, transcript, orbPhase,
-    startListening, stopListening, stopSpeaking, speak,
-    voices, selectedVoice, setSelectedVoice,
-    alwaysOn, wakeStatus, toggleAlwaysOn,
+    isListening,
+    isSpeaking,
+    transcript,
+    startListening,
+    stopListening,
+    stopSpeaking,
+    speak,
+    voices,
+    selectedVoice,
+    setSelectedVoice,
+    alwaysOn,
+    wakeStatus,
+    toggleAlwaysOn,
   } = useSpeech({
     onTranscriptFinal: (text) => {
-      // Check app command first
       const appName = handleAppCommand(text);
+
       if (appName) {
         const reply = `Opening ${appName} for you, Master! 🌸`;
         injectMessage(text, reply);
         if (voiceEnabled) speak(reply);
         return;
       }
-      sendMessage(text, (reply) => { if (voiceEnabled) speak(reply); });
+
+      sendMessage(text, (reply) => {
+        if (voiceEnabled && reply) speak(reply);
+      });
     },
     onWakeWord: handleWakeWord,
     voiceLang,
   });
 
-  const handleSelectConv = useCallback(async (id) => {
-    if (!id) { setConversationId(null); clearMessages(); return; }
-    try {
-      const d = await getConversation(id);
-      setConversationId(id);
-      loadMessages(d.conversation.messages);
-    } catch (_) {}
-    if (window.innerWidth <= 640) setSidebarOpen(false);
-  }, [clearMessages, loadMessages]);
+  const handleSelectConv = useCallback(
+    async (id) => {
+      if (!id) {
+        setConversationId(null);
+        clearMessages();
+        return;
+      }
 
-  const handleNewConv = useCallback((id) => {
-    setConversationId(id || null);
-    clearMessages();
-    if (window.innerWidth <= 640) setSidebarOpen(false);
-  }, [clearMessages]);
+      try {
+        const data = await getConversation(id);
+        setConversationId(id);
+        loadMessages(data?.conversation?.messages || []);
+      } catch {}
+
+      if (window.innerWidth <= 640) {
+        setSidebarOpen(false);
+      }
+    },
+    [clearMessages, loadMessages]
+  );
+
+  const handleNewConv = useCallback(
+    (id) => {
+      setConversationId(id || null);
+      clearMessages();
+
+      if (window.innerWidth <= 640) {
+        setSidebarOpen(false);
+      }
+    },
+    [clearMessages]
+  );
 
   const handleClear = useCallback(() => {
-    setConversationId(null); clearMessages(); stopSpeaking();
+    setConversationId(null);
+    clearMessages();
+    stopSpeaking();
   }, [clearMessages, stopSpeaking]);
 
   const exportChat = useCallback(() => {
-    if (!messages.length) { toast.warning("No messages to export"); return; }
-    const lines = messages.map(m => `${m.role === "user" ? (user?.name || "You") : "Suzu"}: ${m.content}`);
-    const blob  = new Blob([`Suzu AI — Conversation Export\n${"─".repeat(40)}\n\n${lines.join("\n\n")}`], { type: "text/plain" });
-    const url   = URL.createObjectURL(blob);
-    const a     = Object.assign(document.createElement("a"), { href: url, download: `suzu-chat-${new Date().toISOString().slice(0,10)}.txt` });
-    a.click();
+    if (!messages.length) {
+      toast.warning("No messages to export");
+      return;
+    }
+
+    const lines = messages.map(
+      (m) => `${m.role === "user" ? user?.name || "You" : "Suzu"}: ${m.content}`
+    );
+
+    const blob = new Blob(
+      [
+        `Suzu AI — Conversation Export\n${"─".repeat(40)}\n\n${lines.join(
+          "\n\n"
+        )}`,
+      ],
+      { type: "text/plain" }
+    );
+
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+
+    link.href = url;
+    link.download = `suzu-chat-${new Date().toISOString().slice(0, 10)}.txt`;
+    link.click();
+
     URL.revokeObjectURL(url);
     toast.success("Chat exported!");
   }, [messages, user]);
 
   useEffect(() => {
-    const p = new URLSearchParams(window.location.search);
-    if (p.get("new") === "1") { handleClear(); window.history.replaceState({}, "", "/"); }
-  }, []);
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("new") === "1") {
+      handleClear();
+      window.history.replaceState({}, "", "/");
+    }
+  }, [handleClear]);
 
-  // ── Auth gate ─────────────────────────────────────────────────
-  if (!user) return (
-    <>
-      <ToastContainer />
-      <AuthPage onLogin={handleLogin} />
-    </>
-  );
+  if (!user) {
+    return (
+      <>
+        <ToastContainer />
+        <AuthPage onLogin={handleLogin} />
+      </>
+    );
+  }
 
   return (
     <div className={styles.app}>
-      <div className={styles.blob1} /><div className={styles.blob2} /><div className={styles.blob3} />
+      <div className={styles.blob1} />
+      <div className={styles.blob2} />
+      <div className={styles.blob3} />
       <div className={styles.bgGrid} />
 
-      {/* Global dialog system */}
       <ToastContainer />
       <ConfirmDialog />
 
-      <InstallBanner onInstall={triggerInstall} isOnline={isOnline} canInstall={canInstall} />
+      <InstallBanner
+        onInstall={triggerInstall}
+        isOnline={isOnline}
+        canInstall={canInstall}
+      />
 
       {alwaysOn && (
-        <div className={`${styles.wakeBar} ${wakeStatus === "detected" ? styles.wakeBarDetected : ""}`}>
+        <div
+          className={`${styles.wakeBar} ${
+            wakeStatus === "detected" ? styles.wakeBarDetected : ""
+          }`}
+        >
           <span className={styles.wakeDot} />
           <span className={styles.wakeText}>
-            {wakeStatus === "detected" ? `🌸 Wake word detected!` : `👂 Listening for "Hey Suzu"…`}
+            {wakeStatus === "detected"
+              ? "🌸 Wake word detected!"
+              : '👂 Listening for "Hey Suzu"…'}
           </span>
         </div>
       )}
@@ -141,50 +237,90 @@ export default function App() {
           onNew={handleNewConv}
           isOpen={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
-          t={t} lang={lang}
+          t={t}
+          lang={lang}
           user={user}
           onLogout={handleLogout}
         />
 
         <div className={styles.chatArea}>
           <Header
-            onMenuClick={() => setSidebarOpen(v => !v)}
+            onMenuClick={() => setSidebarOpen((prev) => !prev)}
             onSettingsClick={() => setSettingsOpen(true)}
             onClearClick={handleClear}
             voiceEnabled={voiceEnabled}
-            onVoiceToggle={() => { setVoiceEnabled(v => { if (v) stopSpeaking(); return !v; }); }}
+            onVoiceToggle={() => {
+              setVoiceEnabled((prev) => {
+                if (prev) stopSpeaking();
+                return !prev;
+              });
+            }}
             isListening={isListening}
             isSpeaking={isSpeaking}
             isThinking={isThinking}
-            theme={theme} onThemeChange={setTheme}
-            t={t} lang={lang}
+            theme={theme}
+            onThemeChange={setTheme}
+            t={t}
+            lang={lang}
             user={user}
           />
 
           <ChatWindow
-            messages={messages} isThinking={isThinking} error={error}
+            messages={messages}
+            isThinking={isThinking}
+            error={error}
             onSuggestionClick={(text) => {
               const appName = handleAppCommand(text);
-              if (appName) { injectMessage(text, `Opening ${appName}! 🌸`); return; }
-              sendMessage(text, (r) => { if (voiceEnabled) speak(r); });
+
+              if (appName) {
+                const reply = `Opening ${appName}! 🌸`;
+                injectMessage(text, reply);
+                if (voiceEnabled) speak(reply);
+                return;
+              }
+
+              sendMessage(text, (reply) => {
+                if (voiceEnabled && reply) speak(reply);
+              });
             }}
-            transcript={transcript} isListening={isListening} isSpeaking={isSpeaking}
-            t={t} user={user}
+            transcript={transcript}
+            isListening={isListening}
+            isSpeaking={isSpeaking}
+            t={t}
           />
 
           <TextInput
-            onSend={(text) => {
+            onSend={(text, attachments = []) => {
               const appName = handleAppCommand(text);
-              if (appName) { injectMessage(text, `Opening ${appName} for you, Master! 🌸`); if (voiceEnabled) speak(`Opening ${appName}!`); return; }
-              sendMessage(text, (r) => { if (voiceEnabled) speak(r); });
+
+              if (appName) {
+                const reply = `Opening ${appName} for you, Master! 🌸`;
+                injectMessage(text, reply);
+                if (voiceEnabled) speak(`Opening ${appName}!`);
+                return;
+              }
+
+              sendMessage(text, attachments, (reply) => {
+                if (voiceEnabled && reply) speak(reply);
+              });
             }}
             disabled={isThinking}
             onMicClick={() => {
-              if (isSpeaking) { stopSpeaking(); return; }
-              if (isListening) { stopListening(); return; }
+              if (isSpeaking) {
+                stopSpeaking();
+                return;
+              }
+
+              if (isListening) {
+                stopListening();
+                return;
+              }
+
               startListening();
             }}
-            isListening={isListening} isSpeaking={isSpeaking} t={t}
+            isListening={isListening}
+            isSpeaking={isSpeaking}
+            t={t}
           />
         </div>
       </div>
@@ -192,17 +328,30 @@ export default function App() {
       {settingsOpen && (
         <SettingsPanel
           onClose={() => setSettingsOpen(false)}
-          theme={theme} onThemeChange={setTheme}
-          lang={lang} onLangChange={setLang}
-          voiceEnabled={voiceEnabled} onVoiceToggle={() => setVoiceEnabled(v => !v)}
-          voices={voices} selectedVoice={selectedVoice} onVoiceChange={setSelectedVoice}
-          voiceLang={voiceLang} onVoiceLangChange={setVoiceLang}
-          alwaysOn={alwaysOn} wakeStatus={wakeStatus} onToggleAlwaysOn={toggleAlwaysOn}
-          canInstall={canInstall} onInstall={triggerInstall} isInstalled={isInstalled}
+          theme={theme}
+          onThemeChange={setTheme}
+          lang={lang}
+          onLangChange={setLang}
+          voiceEnabled={voiceEnabled}
+          onVoiceToggle={() => setVoiceEnabled((prev) => !prev)}
+          voices={voices}
+          selectedVoice={selectedVoice}
+          onVoiceChange={setSelectedVoice}
+          voiceLang={voiceLang}
+          onVoiceLangChange={setVoiceLang}
+          alwaysOn={alwaysOn}
+          wakeStatus={wakeStatus}
+          onToggleAlwaysOn={toggleAlwaysOn}
+          canInstall={canInstall}
+          onInstall={triggerInstall}
+          isInstalled={isInstalled}
           onRequestNotifications={requestNotifications}
-          fontSize={fontSize} onFontSizeChange={setFontSize}
-          onExport={exportChat} hasMessages={messages.length > 0}
-          user={user} onLogout={handleLogout}
+          fontSize={fontSize}
+          onFontSizeChange={setFontSize}
+          onExport={exportChat}
+          hasMessages={messages.length > 0}
+          user={user}
+          onLogout={handleLogout}
           t={t}
         />
       )}

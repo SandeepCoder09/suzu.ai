@@ -17,6 +17,8 @@ const app = express();
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:5174",
+  "capacitor://localhost",      // ← Android Capacitor
+  "https://localhost",           // ← iOS Capacitor  
   process.env.CORS_ORIGIN,
 ].filter(Boolean);
 
